@@ -1,0 +1,21 @@
+{
+  "name": "expensetracker",
+  "version": "1.0.0",
+  "description": "Expense Tracker for learning purpose",
+  "license": "ISC",
+  "author": "Samuel Boluwatife",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "script": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "mongoose": "^8.12.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.9"
+  }
+}
