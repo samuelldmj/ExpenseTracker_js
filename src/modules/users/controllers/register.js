@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+const bcrypt = require('bcrypt');
 
 const registerUserController = async (req, res, next) => {
     const { fName, email, password, confirmPassword, balance } = req.body;
@@ -11,7 +12,6 @@ const registerUserController = async (req, res, next) => {
         // Throw an error with a message
         return next(new Error("Your name is required"));
     }
-
 
     if (getDuplicateEmail) {
         // Throw an error with a message
@@ -33,10 +33,12 @@ const registerUserController = async (req, res, next) => {
         return next(new Error("Password must be at leat 5 characters"));
     }
 
+    const hashPassword = await bcrypt.hash(password, 12);
+
     const payload = await userModel.create({
         full_name: fName,
         email: email,
-        password: password,
+        password: hashPassword,
         balance: balance,
     });
 
