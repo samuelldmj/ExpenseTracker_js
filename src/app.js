@@ -7,6 +7,7 @@ const { default: mongoose } = require('mongoose'); // Import mongoose for MongoD
 
 const morgan = require('morgan');
 const { errorHandler } = require('./handlers/errorHandler');
+const { usersRoutes } = require('./modules/users/routes/users.routes');
 
 const app = express();
 
@@ -19,8 +20,12 @@ app.use(express.json());
 //middleware
 app.use(morgan('dev'));
 
-//Route
-// app.use(router);
+//Routes
+app.use('/api/users', usersRoutes);
+
+//error handler
+app.use(errorHandler);
+
 
 //connecting to db
 mongoose.connect(process.env.MONGO_DB_CONNECTION)
@@ -37,14 +42,5 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION)
     .catch(err => console.log(`Db Connection error: ${err.message}`));
 
 
-    //error handler
-    // app.use(expressErrorHandler);
-
-
     //model initialization
-    /*
-    this line is required, because i want to dynamically create a db in my mongodb movie_api_dev connection.
-    i have to first put the name of the db immediately after the forward slash and before the question mark.
-    */
-   
 require("../src/models/users.model");
