@@ -10,7 +10,7 @@ const registerUserController = async (req, res, next) => {
 
     if(!fName){
         // Throw an error with a message
-        return next(new Error("Your name is required"));
+        return next(new Error("Your full name is required"));
     }
 
     if (getDuplicateEmail) {
