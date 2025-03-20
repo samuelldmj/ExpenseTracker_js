@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const bcrypt = require('bcrypt');
+const { jwtManager } = require("../../../manager/jwtManager");
 
 const registerUserController = async (req, res, next) => {
     const { fName, email, password, confirmPassword, balance } = req.body;
@@ -35,15 +36,17 @@ const registerUserController = async (req, res, next) => {
 
     const hashPassword = await bcrypt.hash(password, 12);
 
-    const payload = await userModel.create({
+    const createUser = await userModel.create({
         full_name: fName,
         email: email,
         password: hashPassword,
         balance: balance,
     });
 
+    
     res.status(201).json({
-        status: "User Registered Successfully"
+        status: "User Registered Successfully",
+        accessToken : jwtManager(createUser)
     });
 }
 

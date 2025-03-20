@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const bcrypt = require('bcrypt');
+const { jwtManager } = require("../../../manager/jwtManager");
 
 
 const loginController = async (req, res) => {
@@ -11,7 +12,6 @@ getUserByEmail = await userModel.findOne({email : email});
 const comparePassword = await bcrypt.compare(password, getUserByEmail.password);
 console.log(getUserByEmail);
 
-
 if(!getUserByEmail || !comparePassword){
    return  res.status(400).json({
         status : "failed",
@@ -19,14 +19,11 @@ if(!getUserByEmail || !comparePassword){
     });
 }
 
-
 res.status(200).json({
     status : "success",
-    message : "user logged in successfully"
+    message : "user logged in successfully",
+    accessToken : jwtManager(getUserByEmail)
 });
-
-
-
 }
 
 module.exports = {
