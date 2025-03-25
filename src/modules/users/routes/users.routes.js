@@ -13,7 +13,7 @@ usersRoutes.get('/', (req, res) => {
 usersRoutes.post('/register', registerUserController);
 usersRoutes.post('/login', loginController);
 
-
+//any routes below the middleware need authentication to access.
 usersRoutes.use(authMiddleware);
 usersRoutes.get('/dashboard', userDashboardController);
 
