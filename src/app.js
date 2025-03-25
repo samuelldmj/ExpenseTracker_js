@@ -8,6 +8,7 @@ const { default: mongoose } = require('mongoose'); // Import mongoose for MongoD
 const morgan = require('morgan');
 const { errorHandler } = require('./handlers/errorHandler');
 const { usersRoutes } = require('./modules/users/routes/users.routes');
+const { transactionRoutes } = require('./modules/transactions/routes/transactions.routes');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(morgan('dev'));
 
 //Routes
 app.use('/api/users', usersRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 //error handler
 app.use(errorHandler);
@@ -44,3 +46,4 @@ mongoose.connect(process.env.MONGO_DB_CONNECTION)
 
     //model initialization
 require("../src/models/users.model");
+require("../src/models/transaction.model");
