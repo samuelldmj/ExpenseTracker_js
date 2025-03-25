@@ -10,6 +10,14 @@ const userDashboardController = async (req, res) => {
      * 4. Returns user data to client
      */
     const userModel = mongoose.model('users');
+    const transactionsModel = mongoose.model("transactions");
+
+    const transactions = await transactionsModel.find({
+        user_id: req.user._id,
+    })
+    .sort({createdAt : -1})
+    .limit(5);
+
 
     // Get user data using ID from verified JWT
     const getUser = await userModel.findOne({
@@ -19,7 +27,8 @@ const userDashboardController = async (req, res) => {
     res.status(200).json({
         status: "success",
         message: "User dashboard active",
-        data: getUser
+        data: getUser,
+        transactions
     });
 }
 
