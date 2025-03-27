@@ -1,49 +1,60 @@
+// Load environment variables from .env file into process.env
 const dotenv = require('dotenv');
 dotenv.config();
 
-const expressErrorHandler = require('express-async-errors');
-const express = require('express');
-const { default: mongoose } = require('mongoose'); // Import mongoose for MongoDB object modeling
+// Import required packages
+const expressErrorHandler = require('express-async-errors'); // Handles async errors in Express
+const express = require('express'); // The Express web framework
+const { default: mongoose } = require('mongoose'); // MongoDB ODM (Object Data Modeling)
 
-const morgan = require('morgan');
-const { errorHandler } = require('./handlers/errorHandler');
-const { usersRoutes } = require('./modules/users/routes/users.routes');
-const { transactionRoutes } = require('./modules/transactions/routes/transactions.routes');
+// Import middleware and route files
+const morgan = require('morgan'); // HTTP request logger middleware
+const { errorHandler } = require('./handlers/errorHandler'); // Custom error handler
+const { usersRoutes } = require('./modules/users/routes/users.routes'); // User-related routes
+const { transactionRoutes } = require('./modules/transactions/routes/transactions.routes'); // Transaction routes
 
+// Create Express application instance
 const app = express();
 
-
-
-//Express does not return a json format by default
-//so to get a json format we need to do the following below.
+// Middleware to parse incoming JSON requests
+// This allows Express to automatically parse JSON request bodies
 app.use(express.json());
 
-//middleware
+// HTTP request logging middleware
+// 'dev' format gives concise output colored by response status
 app.use(morgan('dev'));
 
-//Routes
+// Mount route handlers
+// All routes in usersRoutes will be prefixed with '/api/users'
 app.use('/api/users', usersRoutes);
+// All routes in transactionRoutes will be prefixed with '/api/transactions'
 app.use('/api/transactions', transactionRoutes);
 
-//error handler
+// Register the error handling middleware
+// This will catch any errors thrown in routes
 app.use(errorHandler);
 
-
-//connecting to db
+// Connect to MongoDB database using the connection string from environment variables
 mongoose.connect(process.env.MONGO_DB_CONNECTION)
     .then(() => {
-        //-----------------
-        console.log('Db Connected!!')
-        //-----------------
+        // Connection successful
+        console.log('Db Connected!!');
+        
+        // Server configuration
         const port = 8000;
         const host = "localhost";
+        
+        // Start the Express server
         app.listen(port, () => {
             console.log(`This server is running on http://${host}:${port}`);
         });
     })
-    .catch(err => console.log(`Db Connection error: ${err.message}`));
+    .catch(err => {
+        // Connection failed
+        console.log(`Db Connection error: ${err.message}`);
+    });
 
-
-    //model initialization
-require("../src/models/users.model");
-require("../src/models/transaction.model");
+// Initialize Mongoose models
+// This ensures all model schemas are registered before they're used
+require("../src/models/users.model"); // User model schema
+require("../src/models/transaction.model"); // Transaction model schema
