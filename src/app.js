@@ -5,6 +5,11 @@ dotenv.config();
 // Import required packages
 const expressErrorHandler = require('express-async-errors'); // Handles async errors in Express
 const express = require('express'); // The Express web framework
+
+const cors = require("cors");
+
+
+
 const { default: mongoose } = require('mongoose'); // MongoDB ODM (Object Data Modeling)
 
 // Import middleware and route files
@@ -15,6 +20,9 @@ const { transactionRoutes } = require('./modules/transactions/routes/transaction
 
 // Create Express application instance
 const app = express();
+
+//CORS
+app.use(cors());
 
 // Middleware to parse incoming JSON requests
 // This allows Express to automatically parse JSON request bodies
@@ -33,6 +41,15 @@ app.use('/api/transactions', transactionRoutes);
 // Register the error handling middleware
 // This will catch any errors thrown in routes
 app.use(errorHandler);
+
+//handles routes that is not part of the custom routes
+app.all("*", (req, res) => {
+    res.status(404).json({
+        status: "failed",
+        message : "Not Found"
+    })
+
+})
 
 // Connect to MongoDB database using the connection string from environment variables
 mongoose.connect(process.env.MONGO_DB_CONNECTION)
